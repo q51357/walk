@@ -1208,9 +1208,9 @@ func (wb *WindowBase) SetSuspended(suspend bool) {
 
 // Invalidate schedules a full repaint of the *WindowBase.
 func (wb *WindowBase) Invalidate() error {
-	if !win.InvalidateRect(wb.hWnd, nil, true) {
-		return newError("InvalidateRect failed")
-	}
+//	if !win.InvalidateRect(wb.hWnd, nil, true) {
+//		return newError("InvalidateRect failed")
+//	}
 
 	return nil
 }
