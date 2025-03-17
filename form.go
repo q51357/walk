@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build windows
 // +build windows
 
 package walk
@@ -100,6 +101,7 @@ type FormBase struct {
 	isInRestoreState            bool
 	started                     bool
 	layoutScheduled             bool
+	disableDPIChange            bool // 控制是否禁用DPI变化响应
 }
 
 func (fb *FormBase) init(form Form) error {
@@ -826,6 +828,10 @@ func (fb *FormBase) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) u
 		fb.ApplySysColors()
 
 	case win.WM_DPICHANGED:
+		if fb.disableDPIChange {
+			return 0
+		}
+
 		wasSuspended := fb.Suspended()
 		fb.SetSuspended(true)
 		defer fb.SetSuspended(wasSuspended)
@@ -861,10 +867,6 @@ func (fb *FormBase) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) u
 			}
 			fb.Synchronize(func() {
 				for ni := range notifyIcons {
-					// We do this on all NotifyIcons, not just ones attached to this form or descendents, because
-					// the notify icon might be on a different screen, and since it can't get notifications itself
-					// we hope that one of the forms did for it. We also have to delay it by a second, because the
-					// tray usually gets resized sometime after us. This is a nasty hack!
 					ni.applyDPI()
 				}
 			})
@@ -891,4 +893,14 @@ func (fb *FormBase) WndProc(hwnd win.HWND, msg uint32, wParam, lParam uintptr) u
 	}
 
 	return fb.WindowBase.WndProc(hwnd, msg, wParam, lParam)
+}
+
+// DisableDPIChange 返回是否禁用了DPI变化响应
+func (fb *FormBase) DisableDPIChange() bool {
+	return fb.disableDPIChange
+}
+
+// SetDisableDPIChange 设置是否禁用DPI变化响应
+func (fb *FormBase) SetDisableDPIChange(disable bool) {
+	fb.disableDPIChange = disable
 }
