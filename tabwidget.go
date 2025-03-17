@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build windows
 // +build windows
 
 package walk
@@ -295,7 +296,7 @@ func (tw *TabWidget) onSelChange() {
 		page := tw.pages.At(tw.currentIndex)
 		page.SetVisible(true)
 		tw.RequestLayout()
-//		page.Invalidate()
+		page.Invalidate()
 
 		var containsFocus bool
 		tw.forEachDescendantRaw(uintptr(win.GetFocus()), func(hwnd win.HWND, lParam uintptr) bool {
@@ -309,7 +310,7 @@ func (tw *TabWidget) onSelChange() {
 		}
 	}
 
-//	tw.Invalidate()
+	tw.Invalidate()
 
 	tw.currentIndexChangedPublisher.Publish()
 }
@@ -560,7 +561,7 @@ func (tw *TabWidget) onInsertedPage(index int, page *TabPage) (err error) {
 
 	page.applyFont(tw.Font())
 
-	tw.Invalidate()
+	//tw.Invalidate()
 
 	return
 }
@@ -625,7 +626,7 @@ func (tw *TabWidget) onRemovedPage(index int, page *TabPage) (err error) {
 
 	tw.SetCurrentIndex(index)
 
-	tw.Invalidate()
+	//tw.Invalidate()
 
 	return
 }
@@ -641,7 +642,7 @@ func (tw *TabWidget) onClearedPages(pages []*TabPage) (err error) {
 	}
 	tw.currentIndex = -1
 
-	tw.Invalidate()
+	//tw.Invalidate()
 
 	return nil
 }
