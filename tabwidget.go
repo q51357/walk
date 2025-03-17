@@ -295,7 +295,7 @@ func (tw *TabWidget) onSelChange() {
 		page := tw.pages.At(tw.currentIndex)
 		page.SetVisible(true)
 		tw.RequestLayout()
-		page.Invalidate()
+//		page.Invalidate()
 
 		var containsFocus bool
 		tw.forEachDescendantRaw(uintptr(win.GetFocus()), func(hwnd win.HWND, lParam uintptr) bool {
@@ -309,7 +309,7 @@ func (tw *TabWidget) onSelChange() {
 		}
 	}
 
-	tw.Invalidate()
+//	tw.Invalidate()
 
 	tw.currentIndexChangedPublisher.Publish()
 }
